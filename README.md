@@ -1,4 +1,4 @@
-## Heroku Postgres Importer
+## Heroku Postgres Evacuator
 
 This is a containerized tool that can migrate a database out of heroku and to a non-heroku postgres database, repointing the heroku app. It uses S3 for final backup storage and can restore things back to heroku (including recreating the same database plan that was deleted).
 
@@ -29,7 +29,7 @@ docker run \
   -e AWS_S3_KEYBASE="dpetersen/rdsmove" \
   -e AWS_ACCESS_KEY_ID="" \
   -e AWS_SECRET_ACCESS_KEY="" \
-  g5search/heroku-exporter
+  g5search/heroku-postgres-evacuator
 ```
 
 For rollback, add `./rollback.sh` to the end of this command. The default is `import.sh`.
