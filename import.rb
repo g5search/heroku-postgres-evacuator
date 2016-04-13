@@ -3,7 +3,7 @@
 require 'aws-sdk'
 require './shared'
 
-pg_aas = get_pg_addons(true)
+pg_aas = get_pg_addons()
 prod_aa = find_prod(pg_aas)
 
 plan = prod_aa["plan"]["name"].strip
@@ -27,21 +27,31 @@ run("downloading", "curl -o #{local} \"#{remote}\"")
 dump_obj = bucket.object(ENV["AWS_S3_KEYBASE"] + "/" + ENV["APP_NAME"] + ".dump")
 dump_obj.upload_file(local)
 
-run("restoring", "pg_restore -d #{ENV["PGDATABASE"]} --verbose --no-acl --no-owner -e --schema=public #{local}", false)
-
-pg_aas.each do |aa|
-  name = aa["name"]
-  run("removing db addon: #{name}", app_suffix("heroku addons:destroy #{name} --confirm #{ENV["APP_NAME"]}"))
+clean_flag = ""
+if ENV["CLEAN_TARGET"] == "true"
+  puts "adding --clean!"
+  clean_flag = "--clean"
 end
 
-url = [
-  "postgres://",
-  ENV["PGUSER"], ":", ENV["PGPASSWORD"],
-  "@",
-  ENV["PGHOST"], ":", ENV["PGPORT"],
-  "/",
-  ENV["PGDATABASE"]
-].join("")
-run("resetting DATABASE_URL=#{url}", app_suffix("heroku config:set DATABASE_URL=#{url}"))
+run("restoring", "pg_restore -d #{ENV["PGDATABASE"]} #{clean_flag} --verbose --no-acl --no-owner -e --schema=public #{local}", false)
+
+if ENV["DESTRUCTIVE"] == "true"
+  pg_aas.each do |aa|
+    name = aa["name"]
+    run("removing db addon: #{name}", app_suffix("heroku addons:destroy #{name} --confirm #{ENV["APP_NAME"]}"))
+  end
+
+  url = [
+    "postgres://",
+    ENV["PGUSER"], ":", ENV["PGPASSWORD"],
+    "@",
+    ENV["PGHOST"], ":", ENV["PGPORT"],
+    "/",
+    ENV["PGDATABASE"]
+  ].join("")
+  run("resetting DATABASE_URL=#{url}", app_suffix("heroku config:set DATABASE_URL=#{url}"))
+else
+  puts "skipping destructive actions"
+end
 
 run("turning off maintenance", app_suffix("heroku maintenance:off"))

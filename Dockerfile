@@ -36,4 +36,4 @@ RUN chmod a+x validate_vars.rb prep_creds.rb import.rb rollback.rb
 COPY *.sh /
 RUN chmod a+x import.sh rollback.sh
 
-CMD import.sh
+CMD /import.sh
