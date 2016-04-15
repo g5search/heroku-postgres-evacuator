@@ -19,9 +19,15 @@ puts "determined and backed up plan type: #{plan}"
 
 run("turning on maintenance", app_suffix("heroku maintenance:on"))
 
-local = "/#{ENV["APP_NAME"]}.dump"
-run("capturing", app_suffix("heroku pg:backups capture DATABASE_URL"))
+
+if ENV["SKIP_SNAPSHOT"] == "true"
+  puts "skipping snapshot..."
+else
+  run("capturing", app_suffix("heroku pg:backups capture DATABASE_URL"))
+end
+
 remote = run("fetching URL", app_suffix("heroku pg:backups public-url"), false)
+local = "/#{ENV["APP_NAME"]}.dump"
 run("downloading", "curl -o #{local} \"#{remote}\"")
 
 dump_obj = bucket.object(ENV["AWS_S3_KEYBASE"] + "/" + ENV["APP_NAME"] + ".dump")

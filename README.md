@@ -8,6 +8,8 @@ With `DESTRUCTIVE` set, this *can* be dangerous, because there is no way to alte
 
 With `CLEAN_TARGET=true`, you can tell the restore command to add the `--clean` flag. This will drop objects before creating them, which might be desirable when you've done a database migration once, tested it, and are about to go into production. You have to consider if some objects have been removed from the source since you last migrated, because those objects will remain on the target. In that case you might be better off recreating the target database to ensure it's clean (and then, ironically, you don't need this flag at all!).
 
+Use `SKIP_SNAPSHOT=true`, if you don't need to take a new snapshot in Heroku. It will skip that step and instead use the URL of the most recent backup.
+
 In my testing, even if you delete a database plan, the PGBackups in heroku remain. I have no idea why or how, but that does provide a minor amount of safety.
 
 ### Usage Example
