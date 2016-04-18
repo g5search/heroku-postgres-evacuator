@@ -14,6 +14,10 @@ Use `SKIP_MAINTENANCE=true` if you don't want to put the app into maintenance mo
 
 In my testing, even if you delete a database plan, the PGBackups in heroku remain. I have no idea why or how, but that does provide a minor amount of safety.
 
+### Important Note on Usage
+
+Unfortunately, the Heroku CLI that this depends upon has an auto-update facility that explodes quite frequently when the CLI baked into this image is out-of-date. Like, really frequently. As in this image becomes useless in a matter of days. Until they [address this issue](https://github.com/heroku/heroku-cli/issues/129), you're going to continue to have to rebuild the image, possibly with `--no-cache` to ensure you are installing the latest CLI. I have no idea. I guess you could curl stuff through the API.
+
 ### Usage Example
 
 Values for your email and token can be found via the following commands:
