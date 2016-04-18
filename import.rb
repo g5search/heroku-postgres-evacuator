@@ -42,7 +42,9 @@ if ENV["CLEAN_TARGET"] == "true"
   clean_flag = "--clean"
 end
 
-run("restoring", "pg_restore -d #{ENV["PGDATABASE"]} #{clean_flag} --verbose --no-acl --no-owner -e --schema=public #{local}", false)
+# the --jobs is a totally made-up number, but in the context I'm running this
+# thing, that number is almost always reasonable. I hope.
+run("restoring", "pg_restore --jobs=2 -d #{ENV["PGDATABASE"]} #{clean_flag} --verbose --no-acl --no-owner -e --schema=public #{local}", false)
 
 if ENV["DESTRUCTIVE"] == "true"
   pg_aas.each do |aa|
