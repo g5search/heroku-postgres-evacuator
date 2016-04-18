@@ -1,6 +1,6 @@
 ## Heroku Postgres Evacuator
 
-This is a containerized tool that can migrate a database out of heroku and to a non-heroku postgres database, repointing the heroku app. It uses S3 for final backup storage and can restore things back to heroku (including recreating the same database plan that was deleted).
+This is a containerized tool that can migrate a database out of heroku and to a non-heroku postgres database, repointing the heroku app. It uses S3 for final backup storage and can restore things back to heroku (including recreating the same database plan that was deleted). Some combination of environment variables also allow you to use this container as a database importer that doesn't disrupt the source app.
 
 The destructive parts of this will only happen when you set `DESTRUCTIVE=true`. Otherwise it backs up and imports, but leaves Heroku untouched (aside from putting the app in maintenance mode during the process). You want to set the variable if you are moving an app's database but keeping the app on Heroku. If you are merely testing the destination, leave it off.
 
@@ -8,7 +8,9 @@ With `DESTRUCTIVE` set, this *can* be dangerous, because there is no way to alte
 
 With `CLEAN_TARGET=true`, you can tell the restore command to add the `--clean` flag. This will drop objects before creating them, which might be desirable when you've done a database migration once, tested it, and are about to go into production. You have to consider if some objects have been removed from the source since you last migrated, because those objects will remain on the target. In that case you might be better off recreating the target database to ensure it's clean (and then, ironically, you don't need this flag at all!).
 
-Use `SKIP_SNAPSHOT=true`, if you don't need to take a new snapshot in Heroku. It will skip that step and instead use the URL of the most recent backup.
+Use `SKIP_SNAPSHOT=true` if you don't need to take a new snapshot in Heroku. It will skip that step and instead use the URL of the most recent backup.
+
+Use `SKIP_MAINTENANCE=true` if you don't want to put the app into maintenance mode.
 
 In my testing, even if you delete a database plan, the PGBackups in heroku remain. I have no idea why or how, but that does provide a minor amount of safety.
 

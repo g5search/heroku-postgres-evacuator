@@ -3,6 +3,8 @@
 require 'aws-sdk'
 require './shared'
 
+skip_maintenance = (ENV["SKIP_MAINTENANCE"] == "true")
+
 pg_aas = get_pg_addons()
 prod_aa = find_prod(pg_aas)
 
@@ -17,8 +19,9 @@ plan_obj = bucket.object(ENV["AWS_S3_KEYBASE"] + "/" + ENV["APP_NAME"] + ".plan"
 plan_obj.put(body: plan)
 puts "determined and backed up plan type: #{plan}"
 
-run("turning on maintenance", app_suffix("heroku maintenance:on"))
-
+unless skip_maintenance
+  run("turning on maintenance", app_suffix("heroku maintenance:on"))
+end
 
 if ENV["SKIP_SNAPSHOT"] == "true"
   puts "skipping snapshot..."
@@ -60,4 +63,6 @@ else
   puts "skipping destructive actions"
 end
 
-run("turning off maintenance", app_suffix("heroku maintenance:off"))
+unless skip_maintenance
+  run("turning off maintenance", app_suffix("heroku maintenance:off"))
+end
