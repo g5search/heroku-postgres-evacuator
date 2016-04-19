@@ -1,2 +1,2 @@
 #!/bin/bash
-./validate_vars.rb && ./prep_creds.rb && ./import.rb
+./validate_general_vars.rb && ./prep_creds.rb && ./import.rb
