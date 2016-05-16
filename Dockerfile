@@ -1,4 +1,5 @@
-from debian:jessie
+FROM debian:jessie
+MAINTAINER G5 Engineering <engineering@getg5.com>
 
 RUN apt-get update
 RUN apt-get install -y wget curl postgresql-client ruby
