@@ -3,6 +3,11 @@
 require 'aws-sdk'
 require './shared'
 
+if ENV["AWS_S3_BUCKET"] == ""
+  puts "must supply AWS_S3_BUCKET"
+  exit 1
+end
+
 run("turning on maintenance", app_suffix("heroku maintenance:on"))
 
 bucket = Aws::S3::Resource.new().bucket(ENV["AWS_S3_BUCKET"])

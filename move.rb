@@ -12,6 +12,11 @@ if plan == ""
   exit 1
 end
 
+if ENV["AWS_S3_BUCKET"] == ""
+  puts "must supply AWS_S3_BUCKET"
+  exit 1
+end
+
 bucket = Aws::S3::Resource.new().bucket(ENV["AWS_S3_BUCKET"])
 plan_obj = bucket.object(ENV["AWS_S3_KEYBASE"] + "/" + ENV["APP_NAME"] + ".plan")
 plan_obj.put(body: plan)

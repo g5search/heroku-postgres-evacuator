@@ -39,7 +39,7 @@ COPY Gemfile Gemfile.lock /
 RUN bundle install
 
 COPY *.rb /
-RUN chmod a+x validate_general_vars.rb validate_aws_vars.rb prep_creds.rb import.rb move.rb rollback.rb
+RUN chmod a+x validate_general_vars.rb prep_creds.rb import.rb move.rb rollback.rb
 
 COPY *.sh /
 RUN chmod a+x import.sh move.sh rollback.sh
