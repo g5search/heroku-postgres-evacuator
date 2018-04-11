@@ -19,6 +19,4 @@ if ENV["CLEAN_TARGET"] == "true"
   clean_flag = "--clean"
 end
 
-# the --jobs is a totally made-up number, but in the context I'm running this
-# thing, that number is almost always reasonable. I hope.
-run("restoring", "pg_restore --jobs=2 -d #{ENV["PGDATABASE"]} #{clean_flag} --verbose --no-acl --no-owner -e --schema=public #{local}", false)
+pg_restore(clean_flag, local)

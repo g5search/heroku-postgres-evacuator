@@ -39,9 +39,7 @@ if ENV["CLEAN_TARGET"] == "true"
   clean_flag = "--clean"
 end
 
-# the --jobs is a totally made-up number, but in the context I'm running this
-# thing, that number is almost always reasonable. I hope.
-run("restoring", "pg_restore --jobs=2 -d #{ENV["PGDATABASE"]} #{clean_flag} --verbose --no-acl --no-owner -e --schema=public #{local}", false)
+pg_restore(clean_flag, local)
 
 pg_aas.each do |aa|
   name = aa["name"]
@@ -50,11 +48,11 @@ end
 
 url = [
   "postgres://",
-  ENV["PGUSER"], ":", ENV["PGPASSWORD"],
+  ENV["DATABASE_USER"], ":", ENV["DATABASE_PASSWORD"],
   "@",
-  ENV["PGHOST"], ":", ENV["PGPORT"],
+  ENV["DATABASE_HOST"], ":", ENV["DATABASE_PORT"],
   "/",
-  ENV["PGDATABASE"]
+  ENV["DATABASE_NAME"]
 ].join("")
 run("resetting DATABASE_URL=#{url}", app_suffix("heroku config:set DATABASE_URL=#{url}"))
 

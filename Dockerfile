@@ -1,15 +1,12 @@
-FROM debian:jessie
+# buster is newer than the current stable version, stretch. I am pulling it
+# because I need a version of postgres that isn't available on stretch yet
+# because of an update to the pg_restore format:
+# https://www.postgresql.org/about/news/1834/
+FROM debian:buster
 MAINTAINER G5 Engineering <engineering@getg5.com>
 
 RUN apt-get update
-RUN apt-get install -y wget curl ruby
-
-# Heroku now requires a newer version of pg_restore that is only available via
-# the postgres apt repo
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list &&\
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - &&\
-    apt-get update &&\
-    apt-get install -y postgresql-client
+RUN apt-get install -y wget gnupg curl postgresql-client ruby
 
 RUN echo "deb http://toolbelt.heroku.com/ubuntu ./" > /etc/apt/sources.list.d/heroku.list &&\
     wget -O- https://toolbelt.heroku.com/apt/release.key | apt-key add - &&\

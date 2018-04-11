@@ -4,10 +4,10 @@
   "EMAIL",
   "HEROKU_TOKEN",
   "APP_NAME",
-  "PGHOST",
-  "PGUSER",
-  "PGPASSWORD",
-  "PGDATABASE",
+  "DATABASE_HOST",
+  "DATABASE_USER",
+  "DATABASE_PASSWORD",
+  "DATABASE_DATABASE",
 ].each do |s|
   if ENV[s] == ""
     puts "#{s} must be provided as an environment variable!"
