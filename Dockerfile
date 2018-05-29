@@ -2,7 +2,14 @@ FROM debian:jessie
 MAINTAINER G5 Engineering <engineering@getg5.com>
 
 RUN apt-get update
-RUN apt-get install -y wget curl postgresql-client ruby
+RUN apt-get install -y wget curl ruby
+
+# Heroku now requires a newer version of pg_restore that is only available via
+# the postgres apt repo
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list &&\
+    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - &&\
+    apt-get update &&\
+    apt-get install -y postgresql-client
 
 RUN echo "deb http://toolbelt.heroku.com/ubuntu ./" > /etc/apt/sources.list.d/heroku.list &&\
     wget -O- https://toolbelt.heroku.com/apt/release.key | apt-key add - &&\
